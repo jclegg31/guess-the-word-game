@@ -92,8 +92,61 @@ const makeGuess = function (guess) {
     if (guessedLetters.includes(guess)) {
         message.innerText = "You have guessed that letter, try again!";
     } else { 
+        //push the guess onto the array
         guessedLetters.push(guess);
-        console.log(guessedLetters);
+        //call function to show the letter when it has not
+        //been guessed before
+        updateGuesses();
+        updateWord(guessedLetters);
     }
 };
 
+const updateGuesses = function () { 
+    //empty the innerHTML of the ul where they players
+    //guessed letters will display
+    guessedLettersElement.innerHTML = "";
+
+    //create a new list item for each letter inside your array
+    for (const letter of guessedLetters) { 
+        const li = document.createElement("li");
+        li.innerText = letter;
+        guessedLettersElement.append(li);
+    }
+
+};
+
+//This function will replace the circle symbols 
+//with the correct letters guessed.
+const updateWord = function (guessedLetters) { 
+    const wordUpper = word.toUpperCase();
+    //split the word string into an array so that
+    //the letter can appear in the guessedLetters array
+    const wordArray = wordUpper.split("");
+    console.log(wordArray);
+
+    //check if wordArray has any of the letters from guessedLetters
+    //if so update the circle symbol with the correct letter
+    //create new array with updated characters and then use join()
+    //to update the empty paragraph where the word in progress is
+    const showWord = [];
+    for (const letter of wordArray) { 
+        if (guessedLetters.includes(letter)) {
+            showWord.push(letter.toUpperCase());
+        } else { 
+            showWord.push("●");
+        }
+    }
+    guessProgress.innerText = showWord.join("");
+    checkIfWon();
+};
+
+//see if player won
+const checkIfWon = function () { 
+    //verify if word in progress matches the word they should guess
+    //if player won, add "win" class to empty paragraph where the 
+    //messages appear.
+    if (word.toUpperCase() === guessProgress.innerText) { 
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
+    }
+};
